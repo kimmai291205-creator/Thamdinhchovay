@@ -1,5 +1,4 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 import pandas as pd
 
 
@@ -12,7 +11,6 @@ st.set_page_config(
     page_icon="🏦",
     layout="wide"
 )
-
 
 
 # ==========================
@@ -53,7 +51,7 @@ def calculate_cic_score(
 
 
 
-    # DTI
+    # Khả năng trả nợ
 
     if dti < 35:
         score += 10
@@ -63,7 +61,7 @@ def calculate_cic_score(
 
 
 
-    # LTV
+    # Tài sản đảm bảo
 
     if ltv < 70:
         score += 10
@@ -73,33 +71,32 @@ def calculate_cic_score(
 
 
 
-    # Thời gian làm việc
+    # Thâm niên công việc
 
     if job_year >= 5:
         score += 5
 
 
 
-    score = max(
-        0,
-        min(100, score)
-    )
+    score = max(0, min(score, 100))
 
 
     return score
 
 
 
-
 def credit_decision(score):
 
     if score >= 80:
+
         return "✅ Hồ sơ tốt - Đề xuất phê duyệt"
 
     elif score >= 60:
-        return "⚠️ Hồ sơ cần xem xét thêm"
+
+        return "⚠️ Cần xem xét thêm"
 
     else:
+
         return "❌ Rủi ro cao - Không đề xuất"
 
 
@@ -114,26 +111,27 @@ st.title(
 )
 
 
-st.info(
+st.write(
 """
-Nhập thông tin khách hàng để hệ thống
-phân tích khả năng vay vốn.
+Ứng dụng hỗ trợ đánh giá nhanh khả năng vay vốn
+của khách hàng cá nhân.
+
+Vui lòng nhập thông tin bên dưới.
 """
 )
 
 
 
 # ==========================
-# NHẬP THÔNG TIN
+# THÔNG TIN KHÁCH HÀNG
 # ==========================
 
 
-st.subheader(
-    "👤 Thông tin khách hàng"
-)
+st.subheader("👤 THÔNG TIN KHÁCH HÀNG")
 
 
 col1, col2 = st.columns(2)
+
 
 
 with col1:
@@ -144,21 +142,30 @@ with col1:
     )
 
 
-    income = st.number_input(
-        "Thu nhập hàng tháng (VNĐ)",
-        value=25000000
+    income_input = st.number_input(
+        "Thu nhập hàng tháng (triệu VNĐ)",
+        min_value=0,
+        value=25,
+        step=1
     )
 
 
-    job_year = st.number_input(
-        "Số năm làm việc",
-        min_value=0,
-        value=3
+    job = st.text_input(
+        "Nghề nghiệp",
+        "Nhân viên văn phòng"
     )
 
 
 
 with col2:
+
+    job_year = st.number_input(
+        "Số năm làm việc ổn định",
+        min_value=0,
+        value=3,
+        step=1
+    )
+
 
     credit_history = st.selectbox(
         "Lịch sử tín dụng",
@@ -170,30 +177,42 @@ with col2:
     )
 
 
-    job = st.text_input(
-        "Nghề nghiệp",
-        "Nhân viên văn phòng"
-    )
+
+# Quy đổi thu nhập
+
+income = income_input * 1_000_000
 
 
 
-st.subheader(
-    "💰 Thông tin khoản vay"
+# ==========================
+# THÔNG TIN KHOẢN VAY
+# ==========================
+
+
+st.subheader("💰 THÔNG TIN KHOẢN VAY")
+
+
+loan_input = st.number_input(
+    "Số tiền đề nghị vay (triệu VNĐ)",
+    min_value=0,
+    value=500,
+    step=10
 )
 
 
 
-loan_amount = st.number_input(
-    "Số tiền đề nghị vay (VNĐ)",
-    value=500000000
+asset_input = st.number_input(
+    "Giá trị tài sản đảm bảo (triệu VNĐ)",
+    min_value=0,
+    value=1500,
+    step=50
 )
 
 
 
-asset_value = st.number_input(
-    "Giá trị tài sản đảm bảo (VNĐ)",
-    value=1500000000
-)
+loan_amount = loan_input * 1_000_000
+
+asset_value = asset_input * 1_000_000
 
 
 
@@ -215,10 +234,15 @@ interest = st.slider(
 
 
 
-old_debt = st.number_input(
-    "Khoản trả nợ hiện tại/tháng",
-    value=2000000
+old_debt_input = st.number_input(
+    "Khoản trả nợ hiện tại/tháng (triệu VNĐ)",
+    min_value=0,
+    value=2,
+    step=1
 )
+
+
+old_debt = old_debt_input * 1_000_000
 
 
 
@@ -227,13 +251,16 @@ old_debt = st.number_input(
 # ==========================
 
 
+st.divider()
+
+
 if st.button(
     "🚀 BẮT ĐẦU THẨM ĐỊNH",
     use_container_width=True
 ):
 
 
-    # Tính EMI
+    # Tính khoản trả hàng tháng
 
     r = interest / 100 / 12
 
@@ -243,18 +270,18 @@ if st.button(
     if r > 0:
 
         emi = (
-            loan_amount*r*(1+r)**n
+            loan_amount * r * (1+r)**n
         ) / (
             (1+r)**n - 1
         )
 
     else:
 
-        emi = loan_amount/n
+        emi = loan_amount / n
 
 
 
-    # Chỉ số
+    # Chỉ số tài chính
 
     dti = (
         (emi + old_debt)
@@ -272,7 +299,7 @@ if st.button(
 
 
 
-    # CIC
+    # Điểm tín dụng
 
     cic_score = calculate_cic_score(
         credit_history,
@@ -290,7 +317,7 @@ if st.button(
 
 
     # ==========================
-    # KẾT QUẢ
+    # HIỂN THỊ KẾT QUẢ
     # ==========================
 
 
@@ -302,8 +329,8 @@ if st.button(
     )
 
 
+    c1, c2, c3 = st.columns(3)
 
-    c1,c2,c3 = st.columns(3)
 
 
     c1.metric(
@@ -313,20 +340,41 @@ if st.button(
 
 
     c2.metric(
-        "DTI",
+        "Tỷ lệ nợ DTI",
         f"{dti:.1f}%"
     )
 
 
     c3.metric(
-        "Kết quả",
+        "Đánh giá",
         decision
     )
 
 
 
+    st.success(
+f"""
+👤 Khách hàng: {name}
+
+💰 Khoản vay:
+{loan_input:,.0f} triệu VNĐ
+
+🏠 Tài sản đảm bảo:
+{asset_input:,.0f} triệu VNĐ
+
+📅 Số tiền trả hàng tháng:
+{emi/1_000_000:,.2f} triệu VNĐ
+
+📌 Tỷ lệ vay trên tài sản (LTV):
+{ltv:.1f}%
+
+"""
+)
+
+
+
     # ==========================
-    # BIỂU ĐỒ
+    # BIỂU ĐỒ RỦI RO
     # ==========================
 
 
@@ -335,13 +383,13 @@ if st.button(
     )
 
 
-    risk = pd.DataFrame({
+    risk_data = pd.DataFrame({
 
         "Chỉ số":
         [
-            "CIC",
-            "DTI an toàn",
-            "LTV an toàn"
+            "Điểm CIC",
+            "An toàn DTI",
+            "An toàn LTV"
         ],
 
 
@@ -356,19 +404,5 @@ if st.button(
 
 
     st.bar_chart(
-        risk.set_index("Chỉ số")
-    )
-
-
-
-    st.success(
-        f"""
-        Khách hàng: {name}
-
-        Khoản vay:
-        {loan_amount:,.0f} VNĐ
-
-        Khoản trả hàng tháng:
-        {emi:,.0f} VNĐ
-        """
+        risk_data.set_index("Chỉ số")
     )
