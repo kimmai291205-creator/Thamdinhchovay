@@ -1,7 +1,10 @@
 import streamlit as st
+
 from credit_score import calculate_cic_score, credit_decision
+
 import matplotlib.pyplot as plt
 import pandas as pd
+
 from report import export_excel
 from pdf_report import create_pdf
 st.set_page_config(
