@@ -1,4 +1,4 @@
-def calculate_cic_score(
+def calculate_cic_score (
     credit_history,
     income,
     dti,
@@ -41,7 +41,7 @@ def calculate_cic_score(
     else:
         score += 3
     return score
-def credit_decision(score):
+def credit_decision (score):
     if score >= 80:
         return "🟢 PHÊ DUYỆT"
     elif score >= 60:
