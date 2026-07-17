@@ -1,5 +1,5 @@
+from credit_score import calculate_cic_score, credit_decision
 import streamlit as st
-
 st.set_page_config(
     page_title="Hệ thống thẩm định cho vay",
     page_icon="🏦",
