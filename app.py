@@ -2,7 +2,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from credit_score import calculate_cic_score, credit_decision
+from credit_score import calculate_cic_score credit_decision
 from report import export_excel
 from pdf_report import create_pdf
 
