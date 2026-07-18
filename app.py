@@ -9,9 +9,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- THÊM LOGO VÀO THANH MENU BÊN TRÁI (SIDEBAR) ---
-st.sidebar.image("logo vay.webp", use_container_width=True)
-
 # Tiêu đề tinh gọn
 st.title("🏦 THẨM ĐỊNH CHO VAY KHÁCH HÀNG CÁ NHÂN")
 st.markdown("---")
@@ -36,7 +33,13 @@ col_input, col_result = st.columns([1, 1.2])
 
 # --- CỘT TRÁI: NHẬP THÔNG TIN ---
 with col_input:
-    st.subheader("📋 Thông tin nhập liệu")
+    # CHÈN LOGO VÀ TIÊU ĐỀ PHỤ NẰM CẠNH NHAU TRÊN CỘT CHÍNH
+    col_logo, col_title_sub = st.columns([1, 4])
+    with col_logo:
+        # Sử dụng file ảnh logo vay.webp của bạn, chỉnh width=80 để logo vừa vặn
+        st.image("logo vay.webp", width=80) 
+    with col_title_sub:
+        st.subheader("📋 Thông tin nhập liệu")
     
     # 1. Số tiền vay (Đã bỏ toàn bộ hàng nút bấm tăng nhanh phía dưới)
     loan_amount = st.number_input("Số tiền đề nghị vay (VND)", min_value=0, step=1000000, format="%d", value=500000000)
