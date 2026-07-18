@@ -9,6 +9,9 @@ st.set_page_config(
     layout="wide"
 )
 
+# --- THÊM LOGO VÀO THANH MENU BÊN TRÁI (SIDEBAR) ---
+st.sidebar.image("logo vay.webp", use_container_width=True)
+
 # Tiêu đề tinh gọn
 st.title("🏦 THẨM ĐỊNH CHO VAY KHÁCH HÀNG CÁ NHÂN")
 st.markdown("---")
