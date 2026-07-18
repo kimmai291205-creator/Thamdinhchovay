@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Đã bỏ chữ "APP" và xóa dòng phụ đề đồ án môn học
+# Tiêu đề tinh gọn
 st.title("🏦 THẨM ĐỊNH CHO VAY KHÁCH HÀNG CÁ NHÂN")
 st.markdown("---")
 
@@ -35,48 +35,29 @@ col_input, col_result = st.columns([1, 1.2])
 with col_input:
     st.subheader("📋 Thông tin nhập liệu")
     
-    # Sử dụng st.session_state để hỗ trợ các nút bấm tăng nhanh số tiền vay
-    if "loan_val" not in st.session_state:
-        st.session_state.loan_val = 500000000
-        
-    # Đã sửa format="%d" an toàn, không lo bị crash hệ thống
-    loan_amount = st.number_input("Số tiền đề nghị vay (VND)", min_value=0, step=1000000, format="%d", key="loan_amount_input", value=st.session_state.loan_val)
-    st.session_state.loan_val = loan_amount
-    
-    # Hiển thị số tiền bằng cả số định dạng dấu phẩy và bằng chữ ngay bên dưới cho khách hàng dễ nhìn
+    # 1. Số tiền vay (Đã bỏ toàn bộ hàng nút bấm tăng nhanh phía dưới)
+    loan_amount = st.number_input("Số tiền đề nghị vay (VND)", min_value=0, step=1000000, format="%d", value=500000000)
     st.markdown(f"👉 *Số tiền nhập:* **{loan_amount:,} VND**")
     st.markdown(f"👉 *Bằng chữ:* **{doc_so_tien(loan_amount)}**")
     
-    # Nút bấm tăng nhanh số tiền vay
-    col_btn1, col_btn2, col_btn3 = st.columns(3)
-    if col_btn1.button("+ 50 Triệu"):
-        st.session_state.loan_val += 50000000
-        st.rerun()
-    if col_btn2.button("+ 100 Triệu"):
-        st.session_state.loan_val += 100000000
-        st.rerun()
-    if col_btn3.button("+ 1 Tỷ"):
-        st.session_state.loan_val += 1000000000
-        st.rerun()
-        
     st.markdown("---")
     loan_term_years = st.number_input("Thời gian vay (Năm)", min_value=1, max_value=30, value=15, step=1)
     interest_rate_annual = st.slider("Lãi suất cho vay (%/năm)", min_value=1.0, max_value=20.0, value=8.5, step=0.1)
     
     st.markdown("---")
-    # Thu nhập hàng tháng
+    # 2. Thu nhập hàng tháng
     monthly_income = st.number_input("Thu nhập hàng tháng của khách hàng (VND)", min_value=0, value=30000000, step=1000000, format="%d")
     st.markdown(f"👉 *Số tiền nhập:* **{monthly_income:,} VND**")
     st.markdown(f"👉 *Bằng chữ:* **{doc_so_tien(monthly_income)}**")
     
     dependents = st.number_input("Số người phụ thuộc", min_value=0, max_value=10, value=1, step=1)
     
-    # Dư nợ cũ hàng tháng
+    # 3. Dư nợ cũ hàng tháng
     existing_monthly_debt = st.number_input("Dư nợ khoản vay cũ hàng tháng (VND)", min_value=0, value=2000000, step=100000, format="%d")
     st.markdown(f"👉 *Số tiền nhập:* **{existing_monthly_debt:,} VND**")
     
     st.markdown("---")
-    # Giá trị tài sản đảm bảo
+    # 4. Giá trị tài sản đảm bảo
     collateral_value = st.number_input("Giá trị Tài sản Đảm bảo (TSĐB) (VND)", min_value=0, value=1000000000, step=10000000, format="%d")
     st.markdown(f"👉 *Số tiền nhập:* **{collateral_value:,} VND**")
     st.markdown(f"👉 *Bằng chữ:* **{doc_so_tien(collateral_value)}**")
