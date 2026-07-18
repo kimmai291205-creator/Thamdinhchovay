@@ -4,13 +4,12 @@ import plotly.express as px
 
 # 1. CẤU HÌNH GIAO DIỆN
 st.set_page_config(
-    page_title="App Thẩm Định Cho Vay Khách Hàng Cá Nhân",
+    page_title="Thẩm Định Cho Vay Khách Hàng Cá Nhân",
     page_icon="🏦",
     layout="wide"
 )
 
-st.title("🏦 APP THẨM ĐỊNH CHO VAY KHÁCH HÀNG CÁ NHÂN")
-st.caption("Đồ án môn học: Quản lý Tài chính / Tín dụng Ngân hàng")
+st.title("🏦 THẨM ĐỊNH CHO VAY KHÁCH HÀNG CÁ NHÂN")
 st.markdown("---")
 
 # 2. CHIA GIAO DIỆN THÀNH 2 CỘT PHẲNG (DỄ THAO TÁC)
